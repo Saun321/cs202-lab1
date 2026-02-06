@@ -65,32 +65,3 @@ void free_copied_args(char **args, ...) {
     
     va_end(reader);
 }    
-
-
-int main(void) {
-    
-    // Create fake argv to test
-    const char *fake_argv[] = {"./nyuc", "Hello", "World", NULL};
-    int fake_argc = 3;
-    
-
-    char **upper_result;
-    upper_result = manipulate_args(fake_argc, fake_argv, toupper);
-    
-    char **lower_result;
-    lower_result = manipulate_args(fake_argc, fake_argv, tolower);
-
-    
-    // Print results
-    int i;
-    i = 0;
-    while (upper_result[i] != NULL) {
-        printf("[%s] -> [%s] [%s]\n", fake_argv[i], upper_result[i], lower_result[i]);
-        i = i + 1;
-    }
-    
-    free_copied_args(upper_result, lower_result, NULL);
-    printf("Memory freed!\n");
-    
-    return 0;
-}
