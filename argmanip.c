@@ -39,8 +39,33 @@ char **manipulate_args(int argc, const char *const *argv, int (*const manip)(int
 }
 
 void free_copied_args(char **args, ...) {
-    //Implement this later
-}
+// Create and place bookmark
+    va_list reader;
+    va_start(reader, args);
+    
+    // Start with first argument (upper)
+    char **current = args;
+
+    while (current != NULL) {
+        
+        // Free each string
+        int i;
+        i = 0;
+        while (current[i] != NULL) {
+            free(current[i]);
+            i = i + 1;
+        }
+        
+        // Free the array itself
+        free(current);
+        
+        // Get next argument (lower, then NULL)
+        current = va_arg(reader, char **);
+    }
+    
+    va_end(reader);
+}    
+
 
 int main(void) {
     
@@ -52,11 +77,20 @@ int main(void) {
     char **upper_result;
     upper_result = manipulate_args(fake_argc, fake_argv, toupper);
     
+    char **lower_result;
+    lower_result = manipulate_args(fake_argc, fake_argv, tolower);
+
+    
     // Print results
-    int i = 0;
+    int i;
+    i = 0;
     while (upper_result[i] != NULL) {
-        printf("%s\n", upper_result[i]);
-        i++;
+        printf("[%s] -> [%s] [%s]\n", fake_argv[i], upper_result[i], lower_result[i]);
+        i = i + 1;
     }
     
-}    
+    free_copied_args(upper_result, lower_result, NULL);
+    printf("Memory freed!\n");
+    
+    return 0;
+}
